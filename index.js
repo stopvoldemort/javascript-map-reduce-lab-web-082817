@@ -1,3 +1,31 @@
+// const issues = [{
+//     "body": "This pull request has been automatically created by learn.co.",
+//     "created_at": "2016-03-28 03:25:56 UTC",
+//     "comments_count": 1,
+//     "id": 143883618,
+//     "number": 3,
+//     "state": "closed",
+//     "url": "https://api.github.com/repos/learn-co-curriculum/angular-what-is-the-event-system-readme/issues/3"
+//   },
+//   {
+//     "body": "after typed 'bundle install' in command line: \r\nAn error occurred while installing eventmachine (1.0.7), and Bundler cannot\r\ncontinue.\r\nMake sure that `gem install eventmachine -v '1.0.7'` succeeds before bundling.\r\n\r\nso i changed \r\neventmachine (1.0.7) to eventmachine (1.2.0.1) in Gemfile.lock\r\n\r\nand then typed 'gem install eventmachine' ,the bundle worked...",
+//     "created_at": "2016-03-25 02:41:47 UTC",
+//     "comments_count": 0,
+//     "id": 143410533,
+//     "number": 24,
+//     "state": "open",
+//     "url": "https://api.github.com/repos/learn-co-curriculum/activerecord-crud/issues/24"
+//   }
+// ]
+
+
+
+
+
+
+
+
+
 const issues = [
   {
     "body": "Instructions say GET /team and POST /newteam. Rspec wants GET/newteam and POST/team.",
@@ -9000,3 +9028,58 @@ const issues = [
     "url": "https://api.github.com/repos/learn-co-curriculum/js-donut-lab/issues/2"
   }
 ];
+
+
+function updateIssues(array) {
+  const newIssues = array.slice()
+  return newIssues.map((issue) => {
+    const newIssue = Object.assign({}, issue)
+    newIssue.url = newIssue.url.replace('api.github.com', 'api-v2.github.com')
+    return newIssue
+  })
+}
+const issuesWithUpdatedApiUrl = updateIssues(issues)
+
+
+function commentCount(array) {
+  return array.map((issue) => issue.comments_count).reduce((total, num) => total += num)
+}
+const commentCountAcrossIssues = commentCount(issues)
+
+
+function getOpenIssues(array) {
+  return array.reduce((total, issue) => {
+    if (issue.state === 'open') {
+      total.push(issue)
+    }
+      return total
+  }, [])
+}
+const openIssues = getOpenIssues(issues)
+
+
+function removeRobotIssues(array) {
+  return array.reduce((total, issue) => {
+    if (!issue.body.includes("This pull request has been automatically created by learn.co.")) {
+      total.push(issue)
+    }
+      return total
+  }, [])
+}
+const nonAutomaticIssues = removeRobotIssues(issues)
+
+function addIssuesToTable(array) {
+  const table = document.getElementsByTagName("table")[0]
+  const issuesHtml = array.forEach((issue) => {
+    const row = table.insertRow(0);
+    const cell1 = row.insertCell(0);
+    const cell2 = row.insertCell(1);
+    const cell3 = row.insertCell(2);
+    cell1.innerHTML = issue.body;
+    cell2.innerHTML = issue.created_at;
+    cell3.innerHTML = issue.state;
+    table.appendChild(row)
+  })
+}
+
+const success = addIssuesToTable(nonAutomaticIssues)
